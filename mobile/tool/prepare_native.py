@@ -21,7 +21,10 @@ def patch_android() -> None:
             '    <queries><intent><action android:name="android.speech.RecognitionService" /></intent></queries>'
         )
     if additions:
-        pos = text.find(">")
+        root = text.find("<manifest")
+        pos = text.find(">", root)
+        if root < 0 or pos < 0:
+            raise SystemExit("Manifesto Android inválido.")
         text = text[: pos + 1] + "\n" + "\n".join(additions) + text[pos + 1 :]
         manifest.write_text(text, encoding="utf-8")
     print("Android: RECORD_AUDIO, INTERNET, speech recognition queries OK")
